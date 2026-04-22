@@ -1,3 +1,4 @@
+using CalorieCounter.Api.Endpoints;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -15,5 +16,7 @@ builder.Services.AddProblemDetails();
 var app = builder.Build();
 
 app.UseExceptionHandler();
+
+app.MapUserEndpoints();
 
 app.Run();
