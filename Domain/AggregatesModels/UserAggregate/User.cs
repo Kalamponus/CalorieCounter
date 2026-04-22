@@ -12,16 +12,18 @@ namespace CalorieCounter.Domain.AggregatesModels
 
         public string Name { get; private set; }
         public int Age { get; private set; }
+        public Gender Gender { get; private set; }
         public float Weight { get; private set; }
         public float Height { get; private set; }
         public float TargetWeight { get; private set; }
 
-        public User(string name, int age, float height, float weight)
+        public User(string name, int age, Gender gender, float height, float weight)
         {
             SetName(name);
             SetAge(age);
             SetHeight(height);
             SetWeight(weight);
+            Gender = gender;
         }
 
         public void SetName(string name)
@@ -43,6 +45,11 @@ namespace CalorieCounter.Domain.AggregatesModels
                 throw new DomainException($"Age must be greater than zero and less than or equal to {MaxAge}.");
 
             Age = age;
+        }
+
+        public void SetGender(Gender gender)
+        {
+            Gender = gender;
         }
 
         public void SetHeight(float height)
