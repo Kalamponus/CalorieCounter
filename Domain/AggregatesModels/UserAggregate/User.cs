@@ -4,11 +4,11 @@ namespace CalorieCounter.Domain.AggregatesModels
 {
     public class User : Entity, IAggregateRoot
     {
-        private const int MaxAge = 150;
-        private const float MaxWeight = 500;
-        private const float MaxHeight = 300;
-        private const int MaxNameLength = 200;
-        private const float MinHealthyBodyMassIndex = 18.5f;
+        public const int MaxAge = 150;
+        public const float MaxWeight = 500;
+        public const float MaxHeight = 300;
+        public const int MaxNameLength = 200;
+        public const float MinHealthyBodyMassIndex = 18.5f;
 
         public string Name { get; private set; }
         public int Age { get; private set; }
