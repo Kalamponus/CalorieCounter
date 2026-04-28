@@ -14,10 +14,14 @@ namespace CalorieCounter.Infrastructure.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
-            builder.Property(u => u.Age);
-            builder.Property(u => u.Gender);
-            builder.Property(u => u.Weight);
-            builder.Property(u => u.Height);
+            builder.Property(u => u.Age)
+                .IsRequired();
+            builder.Property(u => u.Gender)
+                .IsRequired();
+            builder.Property(u => u.Weight)
+                .IsRequired();
+            builder.Property(u => u.Height)
+                .IsRequired();
         }
     }
 }

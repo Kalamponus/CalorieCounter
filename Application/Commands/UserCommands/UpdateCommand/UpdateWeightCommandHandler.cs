@@ -1,12 +1,23 @@
-﻿using MediatR;
+﻿using CalorieCounter.Domain.AggregatesModels;
+using CalorieCounter.Infrastructure.Contexts;
+using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.UpdateCommand
+namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
 {
     public class UpdateWeightCommandHandler : IRequestHandler<UpdateWeightCommand>
     {
-        public Task Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
+        private readonly UserContext _userContext;
+
+        public UpdateWeightCommandHandler(UserContext userContext)
         {
-            throw new NotImplementedException();
+            _userContext = userContext;
+        }
+
+        public async Task Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
+        {
+            User user = await _userContext.Users.FindAsync(request.id, cancellationToken) ?? throw new Exception();
+            user.ChangeWeight(request.weight);
+            await _userContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
