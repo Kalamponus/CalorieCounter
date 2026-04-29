@@ -17,7 +17,7 @@ builder.Host.UseSerilog((context, configuration) =>
 builder.Services.AddProblemDetails();
 
 builder.Services.AddApplication();
-builder.Services.AddPersistence();
+builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainDB") ?? throw new InvalidOperationException("Connection string 'MainDB' not found."));
 
 var app = builder.Build();
 
