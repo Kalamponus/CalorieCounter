@@ -1,5 +1,7 @@
-﻿using CalorieCounter.Domain;
+﻿using CalorieCounter.Application.Commands.UserCommands.CreateCommand;
+using CalorieCounter.Application.Queries.UserQueries.GetInfoQuery;
 using CalorieCounter.Domain.AggregatesModels;
+using MediatR;
 
 namespace CalorieCounter.Api.Endpoints
 {
@@ -7,25 +9,28 @@ namespace CalorieCounter.Api.Endpoints
     {
         public static IEndpointRouteBuilder MapUsersEndpoints(this IEndpointRouteBuilder app)
         {
-            RouteGroupBuilder user = app.MapGroup("/users");
+            RouteGroupBuilder user = app.MapGroup("/user");
             user.MapGet("/{id}", GetUser);
+            user.MapPost("/", CreateUser);
 
             return app;
         }
 
-        private static Task<IResult> GetUser(long id)
+        private async static Task<IResult> GetUser(long id, IMediator mediator)
         {
-            User dummyUser = new ("Aaa", 18, Gender.Female, 185, 67);
-            dummyUser.SetTargetWeight(dummyUser.Weight);
+            GetUserInfoQuery query = new(id);
+            User result = await mediator.Send(query);
 
             // Implementation to get users
-            return Task.FromResult(Results.Ok(dummyUser));
+            return Results.Ok(result);
         }
 
-        private static Task<IResult> CreateUser(User user)
+        private async static Task<IResult> CreateUser(User user, IMediator mediator)
         {
-            // Implementation to create a user
-            return Task.FromResult(Results.Created("/users/1", new { Id = 1, Name = "John Doe" }));
+            CreateUserCommand command = new (user.Name, user.Age, user.Gender, user.Weight, user.Height);
+            User result = await mediator.Send(command);
+
+            return Results.Created("/users/1", result);
         }
     }
 }
