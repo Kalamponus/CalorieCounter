@@ -1,4 +1,5 @@
-﻿using CalorieCounter.Domain.Common;
+﻿using CalorieCounter.Domain.AggregatesModels.UserAggregate;
+using CalorieCounter.Domain.Common;
 
 namespace CalorieCounter.Domain.AggregatesModels
 {
@@ -17,7 +18,7 @@ namespace CalorieCounter.Domain.AggregatesModels
         public float Height { get; private set; }
         public float TargetWeight { get; private set; }
 
-        public User(string name, int age, Gender gender, float height, float weight)
+        public User(Guid id, string name, int age, Gender gender, float height, float weight) : base(id)
         {
             ChangeName(name);
             ChangeAge(age);

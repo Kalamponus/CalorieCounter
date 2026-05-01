@@ -1,4 +1,4 @@
-﻿namespace CalorieCounter.Domain
+﻿namespace CalorieCounter.Domain.AggregatesModels.UserAggregate
 {
     public enum PhysicalActivityLevel
     {

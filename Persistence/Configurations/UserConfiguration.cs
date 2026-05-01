@@ -12,7 +12,7 @@ namespace CalorieCounter.Infrastructure.Configurations
 
             builder.Property(u => u.Name)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(User.MaxNameLength);
 
             builder.Property(u => u.Age)
                 .IsRequired();

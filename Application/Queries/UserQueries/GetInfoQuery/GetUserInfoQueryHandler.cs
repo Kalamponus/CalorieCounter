@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
 {
-    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, User>
+    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, User?>
     {
         private readonly UserContext _userContext;
 
@@ -13,9 +13,9 @@ namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
             _userContext = userContext;
         }
 
-        public async Task<User> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
+        public async Task<User?> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
-            User user = await _userContext.Users.FindAsync(request.id, cancellationToken) ?? throw new Exception();
+            User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
             return user;
         }
     }

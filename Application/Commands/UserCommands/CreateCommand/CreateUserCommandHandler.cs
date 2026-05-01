@@ -4,7 +4,7 @@ using CalorieCounter.Infrastructure.Contexts;
 
 namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User?>
     {
         private readonly UserContext _userContext;
 
@@ -13,13 +13,13 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
             _userContext = userContext;
         }
 
-        public async Task<User> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<User?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            User user = new(request.name, request.age, request.gender, request.height, request.weight);
+            User user = new(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
             await _userContext.AddAsync(user, cancellationToken);
-            await _userContext.SaveChangesAsync(cancellationToken);
-
-            return user;
+            int changes = await _userContext.SaveChangesAsync(cancellationToken);
+            
+            return changes > 0 ? user : null;
         }
     }
 }

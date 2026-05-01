@@ -1,5 +1,4 @@
 ﻿using CalorieCounter.Api.Endpoints;
-using CalorieCounter.Infrastructure.Contexts;
 using Serilog;
 using CalorieCounter.Application;
 using CalorieCounter.Persistence;
@@ -17,7 +16,7 @@ builder.Host.UseSerilog((context, configuration) =>
 builder.Services.AddProblemDetails();
 
 builder.Services.AddApplication();
-builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainDB") ?? throw new InvalidOperationException("Connection string 'MainDB' not found."));
+builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainDB") ?? throw new Exception("Connection string 'MainDB' not found."));
 
 var app = builder.Build();
 

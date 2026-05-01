@@ -15,7 +15,11 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
 
         public async Task<bool> Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
         {
-            User user = await _userContext.Users.FindAsync(request.id, cancellationToken) ?? throw new Exception();
+            User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
+
+            if (user is null)
+                return false;
+
             user.ChangeWeight(request.weight);
             
             return await _userContext.SaveChangesAsync(cancellationToken) > 0;

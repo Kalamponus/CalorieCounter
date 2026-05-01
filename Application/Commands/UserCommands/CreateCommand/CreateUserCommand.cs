@@ -1,5 +1,5 @@
-﻿using CalorieCounter.Domain;
-using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Domain.AggregatesModels;
+using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using MediatR;
 
 namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
@@ -9,5 +9,5 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
         int age,
         Gender gender,
         float weight,
-        float height) : IRequest<User>;
+        float height) : IRequest<User?>;
 }
