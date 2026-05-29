@@ -1,5 +1,7 @@
 ﻿using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using CalorieCounter.Domain.Common;
+using ErrorOr;
+using System.ComponentModel;
 
 namespace CalorieCounter.Domain.AggregatesModels
 {
@@ -27,49 +29,65 @@ namespace CalorieCounter.Domain.AggregatesModels
             Gender = gender;
         }
 
-        public void ChangeName(string name)
+        public ErrorOr<Updated> ChangeName(string name)
         {
             name = name.Trim();
+            List<Error> errors = [];
 
             if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Name cannot be empty.");
-
+                errors.Add(Error.Validation(description: "Name cannot be empty."));
+                
             if (name.Length > MaxNameLength)
-                throw new DomainException($"Name cannot exceed {MaxNameLength} characters.");
+                errors.Add(Error.Validation(description: $"Name cannot exceed {MaxNameLength} characters."));
+
+            if (errors.Count > 0)
+                return errors;
 
             Name = name;
+
+            return Result.Updated;
         }
 
-        public void ChangeAge(int age)
+        public ErrorOr<Updated> ChangeAge(int age)
         {
             if (age <= 0 || age > MaxAge)
-                throw new DomainException($"Age must be greater than zero and less than or equal to {MaxAge}.");
+                return Error.Validation(description: $"Age must be greater than zero and less than or equal to {MaxAge}.");
 
             Age = age;
+
+            return Result.Updated;
         }
 
-        public void ChangeGender(Gender gender)
+        public ErrorOr<Updated> ChangeGender(Gender gender)
         {
             Gender = gender;
+
+            return Result.Updated;
         }
 
-        public void ChangeHeight(float height)
+        public ErrorOr<Updated> ChangeHeight(float height)
         {
             if (height <= 0 || height > MaxHeight)
-                throw new DomainException($"Height must be greater than zero and less than or equal to {MaxHeight}.");
+                return Error.Validation(description: $"Height must be greater than zero and less than or equal to {MaxHeight}.");
 
             Height = height;
+
+            return Result.Updated;
         }
 
-        public void ChangeWeight(float weight)
+        public ErrorOr<Updated> ChangeWeight(float weight)
         {
-            ValidateWeight(weight);
-            Weight = weight;
+            ErrorOr<Updated> result = ValidateWeight(weight);
+
+            if (!result.IsError)
+                Weight = weight;
+
+            return result;
         }
 
-        public void SetTargetWeight(float targetWeight)
+        public ErrorOr<Updated> SetTargetWeight(float targetWeight)
         {
-            ValidateWeight(targetWeight);
+            List<Error> errors = ValidateWeight(targetWeight);
 
             float heightInMeters = Height / 100f;
             float bmi = targetWeight / (heightInMeters * heightInMeters);
@@ -78,12 +96,18 @@ namespace CalorieCounter.Domain.AggregatesModels
                 throw new DomainException("Target weight must be healthy.");
 
             TargetWeight = targetWeight;
+
+            return Result.Updated;
         }
 
-        private void ValidateWeight(float weight)
+        private List<Error> ValidateWeight(float weight)
         {
+            List<Error> errors = [];
+
             if (weight <= 0 || weight > MaxWeight)
-                throw new DomainException($"Weight must be greater than zero and less than or equal to {MaxWeight}.");
+                errors.Add(Error.Validation($"Weight must be greater than zero and less than or equal to {MaxWeight}."));
+
+            return errors;
         }
     }
 }

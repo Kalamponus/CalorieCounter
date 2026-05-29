@@ -1,6 +1,7 @@
 ﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
 {
@@ -15,7 +16,10 @@ namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
 
         public async Task<User?> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
-            User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
+            User? user = await _userContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(usr => usr.Id == request.id, cancellationToken);
+
             return user;
         }
     }
