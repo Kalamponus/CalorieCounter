@@ -1,7 +1,6 @@
 ﻿using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using CalorieCounter.Domain.Common;
-using ErrorOr;
-using System.ComponentModel;
+using FluentResults;
 
 namespace CalorieCounter.Domain.AggregatesModels
 {
@@ -10,7 +9,6 @@ namespace CalorieCounter.Domain.AggregatesModels
         public const int MaxAge = 150;
         public const float MaxWeight = 500;
         public const float MaxHeight = 300;
-        public const int MaxNameLength = 200;
         public const float MinHealthyBodyMassIndex = 18.5f;
 
         public string Name { get; private set; }
@@ -22,92 +20,152 @@ namespace CalorieCounter.Domain.AggregatesModels
 
         public User(Guid id, string name, int age, Gender gender, float height, float weight) : base(id)
         {
-            ChangeName(name);
-            ChangeAge(age);
-            ChangeHeight(height);
-            ChangeWeight(weight);
-            Gender = gender;
-        }
+            List<IError> errors = [];
 
-        public ErrorOr<Updated> ChangeName(string name)
-        {
-            name = name.Trim();
-            List<Error> errors = [];
+            if (!ValidateName(name, out string errorMessage))
+                errors.Add(new Error(errorMessage));
 
-            if (string.IsNullOrWhiteSpace(name))
-                errors.Add(Error.Validation(description: "Name cannot be empty."));
-                
-            if (name.Length > MaxNameLength)
-                errors.Add(Error.Validation(description: $"Name cannot exceed {MaxNameLength} characters."));
+            if (!ValidateAge(age, out errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            if (!ValidateHeight(height, out errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            if (!ValidateWeight(weight, out errorMessage))
+                errors.Add(new Error(errorMessage));
 
             if (errors.Count > 0)
-                return errors;
+                throw new DomainException(string.Join("; ", errors.Select(e => e.Message)));
 
             Name = name;
-
-            return Result.Updated;
-        }
-
-        public ErrorOr<Updated> ChangeAge(int age)
-        {
-            if (age <= 0 || age > MaxAge)
-                return Error.Validation(description: $"Age must be greater than zero and less than or equal to {MaxAge}.");
-
             Age = age;
-
-            return Result.Updated;
+            Gender = gender;
+            Height = height;
+            Weight = weight;
         }
 
-        public ErrorOr<Updated> ChangeGender(Gender gender)
+        public Result ChangeName(string name)
+        {
+            if (ValidateName(name, out string errorMessage))
+            {
+                Name = name;
+                return Result.Ok();
+            }
+            
+            return Result.Fail(errorMessage);
+        }
+
+        private bool ValidateName(string name, out string errorMessage)
+        {
+            name = name.Trim();
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                errorMessage = "Name cannot be empty.";
+                return false;
+            }
+            
+            return true;
+        }
+
+        public Result ChangeAge(int age)
+        {
+            if (ValidateAge(age, out string errorMessage))
+            {
+                Age = age;
+                return Result.Ok();
+            }
+            
+            return Result.Fail(errorMessage);
+        }
+
+        private bool ValidateAge(int age, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            if (age <= 0 || age > MaxAge)
+            {
+                errorMessage = $"Age must be greater than zero and less than or equal to {MaxAge}.";
+                return false;
+            }
+
+            return true;
+        }
+
+        public Result ChangeGender(Gender gender)
         {
             Gender = gender;
-
-            return Result.Updated;
+            return Result.Ok();
         }
 
-        public ErrorOr<Updated> ChangeHeight(float height)
+        public Result ChangeHeight(float height)
         {
+            if (ValidateHeight(height, out string errorMessage))
+            {
+                Height = height;
+                return Result.Ok();
+            }
+
+            return Result.Fail(errorMessage);
+        }
+
+        private bool ValidateHeight(float height, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
             if (height <= 0 || height > MaxHeight)
-                return Error.Validation(description: $"Height must be greater than zero and less than or equal to {MaxHeight}.");
+            {
+                errorMessage = $"Height must be greater than zero and less than or equal to {MaxHeight}.";
+                return false;
+            }
 
-            Height = height;
-
-            return Result.Updated;
+            return true;
         }
 
-        public ErrorOr<Updated> ChangeWeight(float weight)
+        public Result ChangeWeight(float weight)
         {
-            ErrorOr<Updated> result = ValidateWeight(weight);
-
-            if (!result.IsError)
+            if (ValidateWeight(weight, out string errorMessage))
+            {
                 Weight = weight;
+                return Result.Ok();
+            }
 
-            return result;
+            return Result.Fail(errorMessage);
         }
 
-        public ErrorOr<Updated> SetTargetWeight(float targetWeight)
+        public Result SetTargetWeight(float targetWeight)
         {
-            List<Error> errors = ValidateWeight(targetWeight);
+            List<IError> errors = [];
+
+            if (!ValidateWeight(targetWeight, out string errorMessage))
+                errors.Add(new Error(errorMessage));
 
             float heightInMeters = Height / 100f;
             float bmi = targetWeight / (heightInMeters * heightInMeters);
 
             if (bmi < MinHealthyBodyMassIndex)
-                throw new DomainException("Target weight must be healthy.");
+                errors.Add(new Error("Target weight must be healthy."));
+
+            if (errors.Count > 0)
+                return Result.Fail(errors);
 
             TargetWeight = targetWeight;
 
-            return Result.Updated;
+            return Result.Ok();
         }
 
-        private List<Error> ValidateWeight(float weight)
+        private bool ValidateWeight(float weight, out string errorMessage)
         {
-            List<Error> errors = [];
+            errorMessage = string.Empty;
 
             if (weight <= 0 || weight > MaxWeight)
-                errors.Add(Error.Validation($"Weight must be greater than zero and less than or equal to {MaxWeight}."));
+            {
+                errorMessage = $"Weight must be greater than zero and less than or equal to {MaxWeight}.";
+                return false;
+            }
 
-            return errors;
+            return true;
         }
     }
 }
