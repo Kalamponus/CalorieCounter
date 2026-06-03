@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+     
+  nfs-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=Marf
+      - POSTGRES_PASSWORD=J117
+      - POSTGRES_DB=CaloriesCounter
+    ports:
+      - '5432:5432'
