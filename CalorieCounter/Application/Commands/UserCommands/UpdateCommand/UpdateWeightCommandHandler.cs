@@ -20,8 +20,11 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
             if (user is null)
                 return false;
 
-            user.ChangeWeight(request.weight);
-            
+            FluentResults.Result result = user.ChangeWeight(request.weight);
+
+            if (result.IsFailed)
+                return false;
+
             return await _userContext.SaveChangesAsync(cancellationToken) > 0;
         }
     }

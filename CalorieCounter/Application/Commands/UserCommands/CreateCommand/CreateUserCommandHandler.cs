@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
+using CalorieCounter.Domain.Common;
 
 namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
 {
@@ -15,11 +16,18 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
 
         public async Task<User?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            User user = new(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
-            await _userContext.AddAsync(user, cancellationToken);
-            int changes = await _userContext.SaveChangesAsync(cancellationToken);
-            
-            return changes > 0 ? user : null;
+            try
+            {
+                User user = new(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
+                await _userContext.AddAsync(user, cancellationToken);
+                int changes = await _userContext.SaveChangesAsync(cancellationToken);
+                
+                return user;
+            }
+            catch (DomainException)
+            {
+                return null;
+            }
         }
     }
 }
