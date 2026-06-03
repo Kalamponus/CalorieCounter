@@ -2,10 +2,11 @@
 using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using CalorieCounter.Domain.Common;
+using ErrorOr;
 
 namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, User?>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<User>>
     {
         private readonly UserContext _userContext;
 
@@ -14,19 +15,24 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
             _userContext = userContext;
         }
 
-        public async Task<User?> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 User user = new(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
                 await _userContext.AddAsync(user, cancellationToken);
                 int changes = await _userContext.SaveChangesAsync(cancellationToken);
-                
+
                 return user;
             }
-            catch (DomainException)
+            catch (DomainException e)
             {
-                return null;
+                List<Error> errors = e.Message
+                    .Split(DomainException.MessageDelimeter)
+                    .Select(message => Error.Validation(description: message))
+                    .ToList();
+
+                return errors;
             }
         }
     }

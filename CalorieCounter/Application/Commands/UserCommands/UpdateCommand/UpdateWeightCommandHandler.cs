@@ -1,10 +1,11 @@
 ﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
+using ErrorOr;
 using MediatR;
 
 namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
 {
-    public class UpdateWeightCommandHandler : IRequestHandler<UpdateWeightCommand, bool>
+    public class UpdateWeightCommandHandler : IRequestHandler<UpdateWeightCommand, ErrorOr<Updated>>
     {
         private readonly UserContext _userContext;
 
@@ -13,19 +14,27 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
             _userContext = userContext;
         }
 
-        public async Task<bool> Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Updated>> Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
             if (user is null)
-                return false;
+                return Error.NotFound();
 
             FluentResults.Result result = user.ChangeWeight(request.weight);
 
             if (result.IsFailed)
-                return false;
+            {
+                List<Error> errors = result.Errors
+                    .Select(e => Error.Validation(description: e.Message))
+                    .ToList();
 
-            return await _userContext.SaveChangesAsync(cancellationToken) > 0;
+                return errors;
+            }
+
+            bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
+
+            return areChangesSaved ? Result.Updated : Error.Unexpected();
         }
     }
 }

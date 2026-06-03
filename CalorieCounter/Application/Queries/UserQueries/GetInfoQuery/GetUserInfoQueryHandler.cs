@@ -1,11 +1,12 @@
 ﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
+using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
 {
-    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, User?>
+    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, ErrorOr<User>>
     {
         private readonly UserContext _userContext;
 
@@ -14,13 +15,16 @@ namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
             _userContext = userContext;
         }
 
-        public async Task<User?> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<User>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(usr => usr.Id == request.id, cancellationToken);
 
-            return user;
+            if (user is null)
+                return Error.NotFound();
+            else
+                return user;
         }
     }
 }
