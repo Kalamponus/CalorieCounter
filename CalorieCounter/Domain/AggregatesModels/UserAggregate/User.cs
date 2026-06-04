@@ -35,7 +35,7 @@ namespace CalorieCounter.Domain.AggregatesModels
                 errors.Add(new Error(errorMessage));
 
             if (errors.Count > 0)
-                throw new DomainException(string.Join("; ", errors.Select(e => e.Message)));
+                throw new DomainException(string.Join(DomainException.MessageDelimeter, errors.Select(e => e.Message)));
 
             Name = name;
             Age = age;
