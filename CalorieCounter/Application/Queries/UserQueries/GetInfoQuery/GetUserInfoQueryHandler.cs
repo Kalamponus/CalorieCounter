@@ -1,4 +1,5 @@
-﻿using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Application.CommandsAndQueriesErrors;
+using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
@@ -22,7 +23,7 @@ namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
                 .FirstOrDefaultAsync(usr => usr.Id == request.id, cancellationToken);
 
             if (user is null)
-                return Error.NotFound();
+                return Error.NotFound($"User.NotFound", $"Couldn't find user with id {request.id}");
             else
                 return user;
         }

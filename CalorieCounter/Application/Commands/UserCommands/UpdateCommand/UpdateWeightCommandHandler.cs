@@ -26,7 +26,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
             if (result.IsFailed)
             {
                 List<Error> errors = result.Errors
-                    .Select(e => Error.Validation(description: e.Message))
+                    .Select(e => Error.Validation("User.WeightNotUpdated", e.Message))
                     .ToList();
 
                 return errors;
@@ -34,7 +34,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? Result.Updated : Error.Unexpected();
+            return areChangesSaved ? Result.Updated : Error.Unexpected($"User.Unexpected", $"Couldn't save weight changes to user {user.Id} even though the data was validated");
         }
     }
 }

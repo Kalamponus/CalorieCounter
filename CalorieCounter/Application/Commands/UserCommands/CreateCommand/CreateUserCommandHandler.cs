@@ -29,7 +29,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
             {
                 List<Error> errors = e.Message
                     .Split(DomainException.MessageDelimeter)
-                    .Select(message => Error.Validation(description: message))
+                    .Select(message => Error.Validation("User.NotCreated", message))
                     .ToList();
 
                 return errors;
