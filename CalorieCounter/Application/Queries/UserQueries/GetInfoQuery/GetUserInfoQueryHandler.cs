@@ -1,5 +1,4 @@
-﻿using CalorieCounter.Application.CommandsAndQueriesErrors;
-using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
