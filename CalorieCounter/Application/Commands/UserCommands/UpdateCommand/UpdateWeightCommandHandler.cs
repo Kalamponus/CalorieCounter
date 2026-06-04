@@ -21,7 +21,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
             if (user is null)
                 return Error.NotFound();
 
-            FluentResults.Result result = user.ChangeWeight(request.weight);
+            FluentResults.Result result = user.UpdateCurrentWeight(request.weight);
 
             if (result.IsFailed)
             {
