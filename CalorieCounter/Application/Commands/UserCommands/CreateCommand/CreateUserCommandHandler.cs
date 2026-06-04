@@ -17,23 +17,23 @@ namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
 
         public async Task<ErrorOr<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                User user = new(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
-                await _userContext.AddAsync(user, cancellationToken);
-                int changes = await _userContext.SaveChangesAsync(cancellationToken);
+            FluentResults.Result<User> userCreationResult = User.RegisterNewUserData(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
 
-                return user;
-            }
-            catch (DomainException e)
+            if (userCreationResult.IsFailed)
             {
-                List<Error> errors = e.Message
-                    .Split(DomainException.MessageDelimeter)
-                    .Select(message => Error.Validation("User.NotCreated", message))
+                List<Error> errors = userCreationResult.Errors
+                    .Select(e => Error.Validation("User.NotCreated", e.Message))
                     .ToList();
 
                 return errors;
             }
+
+            User user = userCreationResult.Value;
+
+            await _userContext.AddAsync(user, cancellationToken);
+            int changes = await _userContext.SaveChangesAsync(cancellationToken);
+
+            return user;
         }
     }
 }
