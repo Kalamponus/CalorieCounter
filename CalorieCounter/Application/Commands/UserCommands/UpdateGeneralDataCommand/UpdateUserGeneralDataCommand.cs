@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataCommand
 {
-    public record UpdateGeneralDataCommand(
+    public record UpdateUserGeneralDataCommand(
         Guid id,
         string name,
         int age,

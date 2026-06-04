@@ -1,9 +1,12 @@
 ﻿using CalorieCounter.Api.Mapping;
 using CalorieCounter.Application.Commands.UserCommands.CreateCommand;
+using CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataCommand;
 using CalorieCounter.Application.Queries.UserQueries.GetInfoQuery;
 using CalorieCounter.Domain.AggregatesModels;
+using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using Contracts.Requests;
 using Contracts.Responses;
+using ErrorOr;
 using MediatR;
 
 namespace CalorieCounter.Api.Endpoints
@@ -24,28 +27,61 @@ namespace CalorieCounter.Api.Endpoints
         private async static Task<IResult> GetUser(Guid id, IMediator mediator)
         {
             GetUserInfoQuery query = new(id);
-            User? user = await mediator.Send(query);
+            ErrorOr<User> commandResult = await mediator.Send(query);
 
-            if (user is null)
-                return Results.NotFound();
+            if (commandResult.IsError)
+            {
+                if (commandResult.FirstError.Type == ErrorType.NotFound)
+                    return Results.NotFound();
+                else
+                    return Results.Problem(commandResult.FirstError.Description);
+            }
 
-            UserResponse result = user.MapToResponse();
+            UserResponse result = commandResult.Value.MapToResponse();
 
             return Results.Ok(result);
         }
 
         private async static Task<IResult> CreateUser(CreateUserRequest request, IMediator mediator)
         {
-            User user = request.MapToUser();
-            CreateUserCommand command = new (user.Name, user.Age, user.Gender, user.Weight, user.Height);
-            User? resultUser = await mediator.Send(command);
+            CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
+            ErrorOr<User> commandResult = await mediator.Send(command);
 
-            if (resultUser is null)
-                return Results.Conflict();
+            if (commandResult.IsError)
+            {
+                IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
 
-            UserResponse result = resultUser.MapToResponse();
+                if (commandResult.FirstError.Type == ErrorType.Validation)
+                    return Results.BadRequest(errorDescriptions);
+                else if (commandResult.FirstError.Type == ErrorType.Conflict)
+                    return Results.Conflict(errorDescriptions);
+            }
+
+            UserResponse result = commandResult.Value.MapToResponse();
 
             return Results.Created($"{BaseAddress}/{result.Id}", result);
+        }
+
+        private async static Task<IResult> UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
+        {
+            UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
+            ErrorOr<Updated> commandResult = await mediator.Send(command);
+
+            if (commandResult.IsError)
+            {
+                IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
+
+                switch (commandResult.FirstError.Type)
+                {
+                    case ErrorType.NotFound:
+                        return Results.NotFound(errorDescriptions);
+                    case ErrorType.Validation:
+                        return Results.BadRequest(errorDescriptions);
+                    default:
+                        return Results.Problem(commandResult.FirstError.Description);
+                }
+            }
+
         }
     }
 }
