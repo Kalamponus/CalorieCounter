@@ -18,7 +18,7 @@ namespace CalorieCounter.Domain.AggregatesModels
         public float Height { get; private set; }
         public float TargetWeight { get; private set; }
 
-        public User(Guid id, string name, int age, Gender gender, float height, float weight) : base(id)
+        public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight)
         {
             List<IError> errors = [];
 
@@ -35,8 +35,15 @@ namespace CalorieCounter.Domain.AggregatesModels
                 errors.Add(new Error(errorMessage));
 
             if (errors.Count > 0)
-                throw new DomainException(string.Join(DomainException.MessageDelimeter, errors.Select(e => e.Message)));
+                return Result.Fail(errors);
 
+            User user = new(id, name, age, gender, height, weight);
+
+            return Result.Ok(user);
+        }
+
+        private User(Guid id, string name, int age, Gender gender, float height, float weight) : base(id)
+        {
             Name = name;
             Age = age;
             Gender = gender;
@@ -55,7 +62,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             return Result.Fail(errorMessage);
         }
 
-        private bool ValidateName(string name, out string errorMessage)
+        private static bool ValidateName(string name, out string errorMessage)
         {
             name = name.Trim();
             errorMessage = string.Empty;
@@ -80,7 +87,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             return Result.Fail(errorMessage);
         }
 
-        private bool ValidateAge(int age, out string errorMessage)
+        private static bool ValidateAge(int age, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -110,7 +117,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             return Result.Fail(errorMessage);
         }
 
-        private bool ValidateHeight(float height, out string errorMessage)
+        private static bool ValidateHeight(float height, out string errorMessage)
         {
             errorMessage = string.Empty;
 
@@ -155,7 +162,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             return Result.Ok();
         }
 
-        private bool ValidateWeight(float weight, out string errorMessage)
+        private static bool ValidateWeight(float weight, out string errorMessage)
         {
             errorMessage = string.Empty;
 
