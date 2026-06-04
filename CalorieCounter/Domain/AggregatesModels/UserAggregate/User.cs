@@ -55,11 +55,11 @@ namespace CalorieCounter.Domain.AggregatesModels
             return Result.Ok();
         }
 
-        public Result ChangeName(string name)
+        public Result ChangeName(string newName)
         {
-            if (ValidateName(name, out string errorMessage))
+            if (ValidateName(newName, out string errorMessage))
             {
-                Name = name;
+                Name = newName;
                 return Result.Ok();
             }
 

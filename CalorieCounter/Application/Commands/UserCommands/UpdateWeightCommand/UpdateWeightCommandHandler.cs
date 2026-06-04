@@ -1,5 +1,6 @@
 ﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
+using CalorieCounter.Application.ErrorCodes;
 using ErrorOr;
 using MediatR;
 
@@ -19,14 +20,14 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
             if (user is null)
-                return Error.NotFound();
+                return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
 
             FluentResults.Result result = user.UpdateCurrentWeight(request.weight);
 
             if (result.IsFailed)
             {
                 List<Error> errors = result.Errors
-                    .Select(e => Error.Validation("User.WeightNotUpdated", e.Message))
+                    .Select(e => Error.Validation(UserErrorCodes.UpdateFailed, e.Message))
                     .ToList();
 
                 return errors;
@@ -34,7 +35,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? Result.Updated : Error.Unexpected($"User.Unexpected", $"Couldn't save weight changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? Result.Updated : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
         }
     }
 }
