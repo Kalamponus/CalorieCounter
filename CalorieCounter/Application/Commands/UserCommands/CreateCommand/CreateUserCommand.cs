@@ -3,7 +3,7 @@ using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.CreateCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
     public record CreateUserCommand(
         string name,

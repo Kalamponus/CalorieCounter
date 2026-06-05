@@ -4,9 +4,9 @@ using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
-    public class UpdateUserGeneralDataCommandHandler : IRequestHandler<UpdateUserGeneralDataCommand, ErrorOr<Updated>>
+    public class UpdateUserGeneralDataCommandHandler : IRequestHandler<UpdateUserGeneralDataCommand, ErrorOr<User>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +15,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataComm
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<Updated>> Handle(UpdateUserGeneralDataCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<User>> Handle(UpdateUserGeneralDataCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
@@ -35,7 +35,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataComm
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? Result.Updated : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save general data changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save general data changes to user {user.Id} even though the data was validated");
         }
     }
 }

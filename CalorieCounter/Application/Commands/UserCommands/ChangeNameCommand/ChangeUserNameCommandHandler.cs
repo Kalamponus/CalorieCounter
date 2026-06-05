@@ -4,9 +4,9 @@ using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.ChangeNameCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
-    public class ChangeUserNameCommandHandler : IRequestHandler<ChangeUserNameCommand, ErrorOr<Updated>>
+    public class ChangeUserNameCommandHandler : IRequestHandler<ChangeUserNameCommand, ErrorOr<User>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +15,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.ChangeNameCommand
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<Updated>> Handle(ChangeUserNameCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<User>> Handle(ChangeUserNameCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
@@ -34,7 +34,7 @@ namespace CalorieCounter.Application.Commands.UserCommands.ChangeNameCommand
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? Result.Updated : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save name changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save name changes to user {user.Id} even though the data was validated");
         }
     }
 }

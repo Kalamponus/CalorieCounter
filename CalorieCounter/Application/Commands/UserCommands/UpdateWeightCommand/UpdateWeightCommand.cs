@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
     public record UpdateWeightCommand(
         Guid id,

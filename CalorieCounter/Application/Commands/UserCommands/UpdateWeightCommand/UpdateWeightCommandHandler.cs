@@ -4,7 +4,7 @@ using CalorieCounter.Application.ErrorCodes;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.UpdateWeightCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
     public class UpdateWeightCommandHandler : IRequestHandler<UpdateWeightCommand, ErrorOr<Updated>>
     {

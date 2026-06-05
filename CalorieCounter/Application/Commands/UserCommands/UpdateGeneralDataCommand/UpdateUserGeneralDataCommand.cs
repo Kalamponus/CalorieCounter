@@ -1,8 +1,9 @@
-﻿using CalorieCounter.Domain.AggregatesModels.UserAggregate;
+﻿using CalorieCounter.Domain.AggregatesModels;
+using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataCommand
+namespace CalorieCounter.Application.Commands.UserCommands
 {
     public record UpdateUserGeneralDataCommand(
         Guid id,
@@ -10,5 +11,5 @@ namespace CalorieCounter.Application.Commands.UserCommands.UpdateGeneralDataComm
         int age,
         Gender gender,
         float weight,
-        float height) : IRequest<ErrorOr<Updated>>;
+        float height) : IRequest<ErrorOr<User>>;
 }
