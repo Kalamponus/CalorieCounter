@@ -26,7 +26,11 @@ namespace CalorieCounter.Api.Endpoints
             return app;
         }
 
-        private async static Task<Results<Ok<UserResponse>, NotFound, ProblemHttpResult>> GetUser(Guid id, IMediator mediator)
+        private async static Task
+            <Results<Ok<UserResponse>, 
+                NotFound, 
+                ProblemHttpResult>> 
+            GetUser(Guid id, IMediator mediator)
         {
             GetUserInfoQuery query = new(id);
             ErrorOr<User> commandResult = await mediator.Send(query);
@@ -44,7 +48,11 @@ namespace CalorieCounter.Api.Endpoints
             return TypedResults.Ok(response);
         }
 
-        private async static Task<Results<Created<UserResponse>, BadRequest<IEnumerable<string>>, Conflict<IEnumerable<string>>>> CreateUser(CreateUserRequest request, IMediator mediator)
+        private async static Task
+            <Results<Created<UserResponse>,
+                BadRequest<IEnumerable<string>>,
+                Conflict<IEnumerable<string>>>> 
+            CreateUser(CreateUserRequest request, IMediator mediator)
         {
             CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
             ErrorOr<User> commandResult = await mediator.Send(command);
@@ -64,7 +72,12 @@ namespace CalorieCounter.Api.Endpoints
             return TypedResults.Created($"{BaseAddress}/{response.Id}", response);
         }
 
-        private async static Task<Results<Ok<UserResponse>, NotFound<IEnumerable<string>>, BadRequest<IEnumerable<string>>, ProblemHttpResult>> ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
+        private async static Task
+            <Results<Ok<UserResponse>, 
+                NotFound<IEnumerable<string>>, 
+                BadRequest<IEnumerable<string>>, 
+                ProblemHttpResult>> 
+            ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
         {
             ChangeUserNameCommand command = new(request.Id, request.NewName);
             ErrorOr<User> commandResult = await mediator.Send(command);
@@ -89,7 +102,12 @@ namespace CalorieCounter.Api.Endpoints
             return TypedResults.Ok(response);
         }
 
-        private async static Task<Results<Ok<UserResponse>, NotFound<IEnumerable<string>>, BadRequest<IEnumerable<string>>, ProblemHttpResult>> UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
+        private async static Task
+            <Results<Ok<UserResponse>, 
+                NotFound<IEnumerable<string>>, 
+                BadRequest<IEnumerable<string>>, 
+                ProblemHttpResult>> 
+            UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
         {
             UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
             ErrorOr<User> commandResult = await mediator.Send(command);
