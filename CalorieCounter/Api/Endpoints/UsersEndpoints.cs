@@ -23,6 +23,7 @@ namespace CalorieCounter.Api.Endpoints
             user.MapPut("/{id}", UpdateUserGeneralData);
             user.MapPut("/{id}/name", ChangeUserName);
             user.MapPut("/{id}/weight", UpdateWeight);
+            user.MapPut("/{id}/target-weight", ChangeTargetWeight);
 
             return app;
         }
@@ -121,6 +122,26 @@ namespace CalorieCounter.Api.Endpoints
         UpdateWeight(Guid id, UpdateUserWeightRequest request, IMediator mediator)
         {
             UpdateUserWeightCommand command = new(id, request.Weight);
+            ErrorOr<User> commandResult = await mediator.Send(command);
+
+            if (commandResult.IsError)
+            {
+                return GetErrors(commandResult);
+            }
+
+            UserResponse response = commandResult.Value.MapToResponse();
+
+            return TypedResults.Ok(response);
+        }
+
+        private async static Task
+            <Results<Ok<UserResponse>,
+                NotFound<IEnumerable<string>>,
+                BadRequest<IEnumerable<string>>,
+                ProblemHttpResult>>
+        ChangeTargetWeight(Guid id, ChangeUserTargetWeightRequest request, IMediator mediator)
+        {
+            ChangeUserTargetWeightCommand command = new(id, request.TargetWeight);
             ErrorOr<User> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
