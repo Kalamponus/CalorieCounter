@@ -30,7 +30,7 @@ namespace CalorieCounter.Api.Endpoints
             <Results<Ok<UserResponse>, 
                 NotFound, 
                 ProblemHttpResult>> 
-            GetUser(Guid id, IMediator mediator)
+        GetUser(Guid id, IMediator mediator)
         {
             GetUserInfoQuery query = new(id);
             ErrorOr<User> commandResult = await mediator.Send(query);
@@ -52,7 +52,7 @@ namespace CalorieCounter.Api.Endpoints
             <Results<Created<UserResponse>,
                 BadRequest<IEnumerable<string>>,
                 Conflict<IEnumerable<string>>>> 
-            CreateUser(CreateUserRequest request, IMediator mediator)
+        CreateUser(CreateUserRequest request, IMediator mediator)
         {
             CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
             ErrorOr<User> commandResult = await mediator.Send(command);
@@ -77,7 +77,7 @@ namespace CalorieCounter.Api.Endpoints
                 NotFound<IEnumerable<string>>, 
                 BadRequest<IEnumerable<string>>, 
                 ProblemHttpResult>> 
-            ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
+        ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
         {
             ChangeUserNameCommand command = new(request.Id, request.NewName);
             ErrorOr<User> commandResult = await mediator.Send(command);
@@ -107,7 +107,7 @@ namespace CalorieCounter.Api.Endpoints
                 NotFound<IEnumerable<string>>, 
                 BadRequest<IEnumerable<string>>, 
                 ProblemHttpResult>> 
-            UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
+        UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
         {
             UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
             ErrorOr<User> commandResult = await mediator.Send(command);
