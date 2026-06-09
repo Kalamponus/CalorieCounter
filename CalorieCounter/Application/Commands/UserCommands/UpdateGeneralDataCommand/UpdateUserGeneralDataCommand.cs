@@ -5,7 +5,8 @@ using MediatR;
 
 namespace CalorieCounter.Application.Commands.UserCommands
 {
-    public record CreateUserCommand(
+    public record UpdateUserGeneralDataCommand(
+        Guid id,
         string name,
         int age,
         Gender gender,

@@ -7,11 +7,6 @@ namespace CalorieCounter.Api.Mapping
 {
     public static class UserMapping
     {
-        public static User MapToUser(this CreateUserRequest userRequest)
-        {
-            return new User(Guid.NewGuid(), userRequest.Name, userRequest.Age, (Gender)userRequest.Gender, userRequest.Height, userRequest.Weight);
-        }
-
         public static UserResponse MapToResponse(this User user)
         {
             return new UserResponse()

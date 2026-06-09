@@ -20,19 +20,7 @@ namespace CalorieCounter.Domain.AggregatesModels
 
         public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight)
         {
-            List<IError> errors = [];
-
-            if (!ValidateName(name, out string errorMessage))
-                errors.Add(new Error(errorMessage));
-
-            if (!ValidateAge(age, out errorMessage))
-                errors.Add(new Error(errorMessage));
-
-            if (!ValidateHeight(height, out errorMessage))
-                errors.Add(new Error(errorMessage));
-
-            if (!ValidateWeight(weight, out errorMessage))
-                errors.Add(new Error(errorMessage));
+            List<IError> errors = ValidateData(name, age, gender, height, weight);
 
             if (errors.Count > 0)
                 return Result.Fail(errors);
@@ -51,86 +39,34 @@ namespace CalorieCounter.Domain.AggregatesModels
             Weight = weight;
         }
 
-        public Result ChangeName(string name)
+        public Result UpdateGeneralUserData(string name, int age, Gender gender, float height, float weight)
         {
-            if (ValidateName(name, out string errorMessage))
-            {
-                Name = name;
-                return Result.Ok();
-            }
-            
-            return Result.Fail(errorMessage);
-        }
+            List<IError> errors = ValidateData(name, age, gender, height, weight);
 
-        private static bool ValidateName(string name, out string errorMessage)
-        {
-            name = name.Trim();
-            errorMessage = string.Empty;
+            if (errors.Count > 0)
+                return Result.Fail(errors);
 
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                errorMessage = "Name cannot be empty.";
-                return false;
-            }
-            
-            return true;
-        }
-
-        public Result ChangeAge(int age)
-        {
-            if (ValidateAge(age, out string errorMessage))
-            {
-                Age = age;
-                return Result.Ok();
-            }
-            
-            return Result.Fail(errorMessage);
-        }
-
-        private static bool ValidateAge(int age, out string errorMessage)
-        {
-            errorMessage = string.Empty;
-
-            if (age <= 0 || age > MaxAge)
-            {
-                errorMessage = $"Age must be greater than zero and less than or equal to {MaxAge}.";
-                return false;
-            }
-
-            return true;
-        }
-
-        public Result ChangeGender(Gender gender)
-        {
+            Name = name;
+            Age = age;
             Gender = gender;
+            Height = height;
+            Weight = weight;
+
             return Result.Ok();
         }
 
-        public Result ChangeHeight(float height)
+        public Result ChangeName(string newName)
         {
-            if (ValidateHeight(height, out string errorMessage))
+            if (ValidateName(newName, out string errorMessage))
             {
-                Height = height;
+                Name = newName;
                 return Result.Ok();
             }
 
             return Result.Fail(errorMessage);
         }
 
-        private static bool ValidateHeight(float height, out string errorMessage)
-        {
-            errorMessage = string.Empty;
-
-            if (height <= 0 || height > MaxHeight)
-            {
-                errorMessage = $"Height must be greater than zero and less than or equal to {MaxHeight}.";
-                return false;
-            }
-
-            return true;
-        }
-
-        public Result ChangeWeight(float weight)
+        public Result UpdateCurrentWeight(float weight)
         {
             if (ValidateWeight(weight, out string errorMessage))
             {
@@ -160,6 +96,65 @@ namespace CalorieCounter.Domain.AggregatesModels
             TargetWeight = targetWeight;
 
             return Result.Ok();
+        }
+
+        private static List<IError> ValidateData(string name, int age, Gender gender, float height, float weight)
+        {
+            List<IError> errors = [];
+
+            if (!ValidateName(name, out string errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            if (!ValidateAge(age, out errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            if (!ValidateHeight(height, out errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            if (!ValidateWeight(weight, out errorMessage))
+                errors.Add(new Error(errorMessage));
+
+            return errors;
+        }
+
+        private static bool ValidateName(string name, out string errorMessage)
+        {
+            name = name.Trim();
+            errorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                errorMessage = "Name cannot be empty.";
+                return false;
+            }
+            
+            return true;
+        }
+
+        private static bool ValidateAge(int age, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            if (age <= 0 || age > MaxAge)
+            {
+                errorMessage = $"Age must be greater than zero and less than or equal to {MaxAge}.";
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool ValidateHeight(float height, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            if (height <= 0 || height > MaxHeight)
+            {
+                errorMessage = $"Height must be greater than zero and less than or equal to {MaxHeight}.";
+                return false;
+            }
+
+            return true;
         }
 
         private static bool ValidateWeight(float weight, out string errorMessage)
