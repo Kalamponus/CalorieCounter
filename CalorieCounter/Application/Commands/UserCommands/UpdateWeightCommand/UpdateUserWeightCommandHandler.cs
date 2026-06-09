@@ -6,16 +6,16 @@ using MediatR;
 
 namespace CalorieCounter.Application.Commands.UserCommands
 {
-    public class UpdateWeightCommandHandler : IRequestHandler<UpdateWeightCommand, ErrorOr<Updated>>
+    public class UpdateUserWeightCommandHandler : IRequestHandler<UpdateUserWeightCommand, ErrorOr<User>>
     {
         private readonly UserContext _userContext;
 
-        public UpdateWeightCommandHandler(UserContext userContext)
+        public UpdateUserWeightCommandHandler(UserContext userContext)
         {
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<Updated>> Handle(UpdateWeightCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<User>> Handle(UpdateUserWeightCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
@@ -35,7 +35,7 @@ namespace CalorieCounter.Application.Commands.UserCommands
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? Result.Updated : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
         }
     }
 }

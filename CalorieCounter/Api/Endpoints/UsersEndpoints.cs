@@ -22,14 +22,15 @@ namespace CalorieCounter.Api.Endpoints
             user.MapPost("/", CreateUser);
             user.MapPut("/{id}", UpdateUserGeneralData);
             user.MapPut("/{id}/name", ChangeUserName);
+            user.MapPut("/{id}/weight", UpdateWeight);
 
             return app;
         }
 
         private async static Task
-            <Results<Ok<UserResponse>, 
-                NotFound, 
-                ProblemHttpResult>> 
+            <Results<Ok<UserResponse>,
+                NotFound,
+                ProblemHttpResult>>
         GetUser(Guid id, IMediator mediator)
         {
             GetUserInfoQuery query = new(id);
@@ -51,7 +52,7 @@ namespace CalorieCounter.Api.Endpoints
         private async static Task
             <Results<Created<UserResponse>,
                 BadRequest<IEnumerable<string>>,
-                Conflict<IEnumerable<string>>>> 
+                Conflict<IEnumerable<string>>>>
         CreateUser(CreateUserRequest request, IMediator mediator)
         {
             CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
@@ -73,10 +74,10 @@ namespace CalorieCounter.Api.Endpoints
         }
 
         private async static Task
-            <Results<Ok<UserResponse>, 
-                NotFound<IEnumerable<string>>, 
-                BadRequest<IEnumerable<string>>, 
-                ProblemHttpResult>> 
+            <Results<Ok<UserResponse>,
+                NotFound<IEnumerable<string>>,
+                BadRequest<IEnumerable<string>>,
+                ProblemHttpResult>>
         ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
         {
             ChangeUserNameCommand command = new(request.Id, request.NewName);
@@ -84,17 +85,7 @@ namespace CalorieCounter.Api.Endpoints
 
             if (commandResult.IsError)
             {
-                IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
-
-                switch (commandResult.FirstError.Type)
-                {
-                    case ErrorType.NotFound:
-                        return TypedResults.NotFound(errorDescriptions);
-                    case ErrorType.Validation:
-                        return TypedResults.BadRequest(errorDescriptions);
-                    default:
-                        return TypedResults.Problem(commandResult.FirstError.Description);
-                }
+                return GetErrors(commandResult);
             }
 
             UserResponse response = commandResult.Value.MapToResponse();
@@ -103,33 +94,60 @@ namespace CalorieCounter.Api.Endpoints
         }
 
         private async static Task
-            <Results<Ok<UserResponse>, 
-                NotFound<IEnumerable<string>>, 
-                BadRequest<IEnumerable<string>>, 
-                ProblemHttpResult>> 
-        UpdateUserGeneralData(UpdateUserGeneralData request, IMediator mediator)
+            <Results<Ok<UserResponse>,
+                NotFound<IEnumerable<string>>,
+                BadRequest<IEnumerable<string>>,
+                ProblemHttpResult>>
+        UpdateUserGeneralData(UpdateUserGeneralDataRequest request, IMediator mediator)
         {
             UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
             ErrorOr<User> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
-                IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
-
-                switch (commandResult.FirstError.Type)
-                {
-                    case ErrorType.NotFound:
-                        return TypedResults.NotFound(errorDescriptions);
-                    case ErrorType.Validation:
-                        return TypedResults.BadRequest(errorDescriptions);
-                    default:
-                        return TypedResults.Problem(commandResult.FirstError.Description);
-                }
+                return GetErrors(commandResult);
             }
 
             UserResponse response = commandResult.Value.MapToResponse();
 
             return TypedResults.Ok(response);
+        }
+
+        private async static Task
+            <Results<Ok<UserResponse>,
+                NotFound<IEnumerable<string>>,
+                BadRequest<IEnumerable<string>>,
+                ProblemHttpResult>>
+        UpdateWeight(Guid id, UpdateUserWeightRequest request, IMediator mediator)
+        {
+            UpdateUserWeightCommand command = new(id, request.Weight);
+            ErrorOr<User> commandResult = await mediator.Send(command);
+
+            if (commandResult.IsError)
+            {
+                return GetErrors(commandResult);
+            }
+
+            UserResponse response = commandResult.Value.MapToResponse();
+
+            return TypedResults.Ok(response);
+        }
+
+        private static Results<Ok<UserResponse>,
+                NotFound<IEnumerable<string>>,
+                BadRequest<IEnumerable<string>>,
+                ProblemHttpResult> GetErrors(ErrorOr<User> commandResult)
+        {
+            IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
+            switch (commandResult.FirstError.Type)
+            {
+                case ErrorType.NotFound:
+                    return TypedResults.NotFound(errorDescriptions);
+                case ErrorType.Validation:
+                    return TypedResults.BadRequest(errorDescriptions);
+                default:
+                    return TypedResults.Problem(commandResult.FirstError.Description);
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Contracts.Requests
 {
-    public sealed record UpdateUserGeneralData
+    public sealed record UpdateUserGeneralDataRequest
     {
         public required Guid Id { get; init; }
         public required string Name { get; init; }
