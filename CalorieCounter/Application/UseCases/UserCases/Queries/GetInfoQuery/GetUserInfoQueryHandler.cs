@@ -4,7 +4,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
+namespace CalorieCounter.Application.UseCases.UserCases.Queries
 {
     public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, ErrorOr<User>>
     {

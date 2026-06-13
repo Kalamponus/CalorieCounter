@@ -4,7 +4,7 @@ using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands
+namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public class UpdateUserGeneralDataCommandHandler : IRequestHandler<UpdateUserGeneralDataCommand, ErrorOr<User>>
     {

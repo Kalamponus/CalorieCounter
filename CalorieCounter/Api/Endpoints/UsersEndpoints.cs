@@ -1,6 +1,6 @@
 ﻿using CalorieCounter.Api.Mapping;
-using CalorieCounter.Application.Commands.UserCommands;
-using CalorieCounter.Application.Queries.UserQueries.GetInfoQuery;
+using CalorieCounter.Application.UseCases.UserCases.Commands;
+using CalorieCounter.Application.UseCases.UserCases.Queries;
 using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using Contracts.Requests;

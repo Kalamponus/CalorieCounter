@@ -5,7 +5,7 @@ using ErrorOr;
 using CalorieCounter.Application.ErrorCodes;
 using Microsoft.EntityFrameworkCore;
 
-namespace CalorieCounter.Application.Commands.UserCommands
+namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<User>>
     {

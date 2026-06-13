@@ -2,7 +2,7 @@
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Queries.UserQueries.GetInfoQuery
+namespace CalorieCounter.Application.UseCases.UserCases.Queries
 {
     public record GetUserInfoQuery(Guid id) : IRequest<ErrorOr<User>>;
 }

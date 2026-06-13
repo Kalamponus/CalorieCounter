@@ -4,12 +4,12 @@ namespace CalorieCounter.Application.DTO
 {
     public record UserDto
     {
-        public required Guid Id { get; set; }
-        public required string Name { get; set; }
-        public required int Age { get; set; }
-        public required Gender Gender { get; set; }
-        public required float Weight { get; set; }
-        public required float Height { get; set; }
-        public required float TargetWeight { get; set; }
+        public required Guid Id { get; init; }
+        public required string Name { get; init; }
+        public required int Age { get; init; }
+        public required Gender Gender { get; init; }
+        public required float Weight { get; init; }
+        public required float Height { get; init; }
+        public required float TargetWeight { get; init; }
     }
 }

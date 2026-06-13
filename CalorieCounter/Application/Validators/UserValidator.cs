@@ -1,7 +1,7 @@
 ﻿using CalorieCounter.Application.DTO;
 using FluentValidation;
 
-namespace CalorieCounter.Domain.Validators
+namespace CalorieCounter.Application.Validators
 {
     public class UserValidator : AbstractValidator<UserDto>
     {
