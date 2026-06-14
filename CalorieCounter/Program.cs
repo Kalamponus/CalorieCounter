@@ -3,6 +3,7 @@ using Serilog;
 using CalorieCounter.Application;
 using CalorieCounter.Persistence;
 using FluentValidation;
+using CalorieCounter.Application.Behaviours;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -19,6 +20,10 @@ builder.Services.AddProblemDetails();
 builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainDB") ?? throw new Exception("Connection string 'MainDB' not found."));
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+});
 
 var app = builder.Build();
 

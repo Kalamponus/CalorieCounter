@@ -3,7 +3,6 @@ using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using CalorieCounter.Application.ErrorCodes;
-using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
@@ -18,13 +17,6 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
 
         public async Task<ErrorOr<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            User? user = await _userContext.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (user is not null)
-                return Error.Conflict("User.AlreadyExists", $"User {user.Id} already exists");
-
             FluentResults.Result<User> userCreationResult = User.RegisterNewUserData(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
 
             if (userCreationResult.IsFailed)
@@ -36,7 +28,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
                 return errors;
             }
 
-            user = userCreationResult.Value;
+            User user = userCreationResult.Value;
 
             await _userContext.AddAsync(user, cancellationToken);
             int changes = await _userContext.SaveChangesAsync(cancellationToken);
