@@ -3,10 +3,12 @@ using CalorieCounter.Infrastructure.Contexts;
 using CalorieCounter.Application.ErrorCodes;
 using ErrorOr;
 using MediatR;
+using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.Mapping;
 
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
-    public class UpdateUserWeightCommandHandler : IRequestHandler<UpdateUserWeightCommand, ErrorOr<User>>
+    public class UpdateUserWeightCommandHandler : IRequestHandler<UpdateUserWeightCommand, ErrorOr<UserDto>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +17,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<User>> Handle(UpdateUserWeightCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<UserDto>> Handle(UpdateUserWeightCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
@@ -35,7 +37,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user.MapToDto() : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
         }
     }
 }

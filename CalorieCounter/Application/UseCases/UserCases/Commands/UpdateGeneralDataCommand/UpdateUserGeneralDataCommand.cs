@@ -1,4 +1,4 @@
-﻿using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Application.DTO;
 using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using ErrorOr;
 using MediatR;
@@ -11,5 +11,5 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
         int age,
         Gender gender,
         float weight,
-        float height) : IRequest<ErrorOr<User>>;
+        float height) : IRequest<ErrorOr<UserDto>>;
 }

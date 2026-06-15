@@ -1,13 +1,11 @@
-﻿using CalorieCounter.Domain.AggregatesModels;
-using CalorieCounter.Domain.AggregatesModels.UserAggregate;
-using Contracts.Requests;
+﻿using CalorieCounter.Application.DTO;
 using Contracts.Responses;
 
 namespace CalorieCounter.Api.Mapping
 {
     public static class UserMapping
     {
-        public static UserResponse MapToResponse(this User user)
+        public static UserResponse MapToResponse(this UserDto user)
         {
             return new UserResponse()
             {

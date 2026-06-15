@@ -3,10 +3,12 @@ using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using CalorieCounter.Application.ErrorCodes;
+using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.Mapping;
 
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<User>>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<UserDto>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +17,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<User>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             FluentResults.Result<User> userCreationResult = User.RegisterNewUserData(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight);
 
@@ -33,7 +35,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
             await _userContext.AddAsync(user, cancellationToken);
             int changes = await _userContext.SaveChangesAsync(cancellationToken);
 
-            return changes > 0 ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't create user {user.Id} even though the data was validated)");
+            return changes > 0 ? user.MapToDto() : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't create user {user.Id} even though the data was validated)");
         }
     }
 }

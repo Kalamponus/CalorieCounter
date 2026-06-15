@@ -1,4 +1,6 @@
-﻿using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.Mapping;
+using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
@@ -6,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CalorieCounter.Application.UseCases.UserCases.Queries
 {
-    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, ErrorOr<User>>
+    public class GetUserInfoQueryHandler : IRequestHandler<GetUserInfoQuery, ErrorOr<UserDto>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +17,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Queries
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<User>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<UserDto>> Handle(GetUserInfoQuery request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users
                 .AsNoTracking()
@@ -24,7 +26,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Queries
             if (user is null)
                 return Error.NotFound($"User.NotFound", $"Couldn't find user with id {request.id}");
             else
-                return user;
+                return user.MapToDto();
         }
     }
 }
