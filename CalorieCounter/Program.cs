@@ -22,7 +22,7 @@ builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainD
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddMediatR(cfg =>
 {
-    cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+    cfg.AddOpenBehavior(typeof(CommandValidationBehaviour<,>));
 });
 
 var app = builder.Build();

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace CalorieCounter.Application.Behaviours
 {
-    public class ValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>>? validators = null)
+    public class CommandValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>>? validators = null)
         : IPipelineBehavior<TRequest, ErrorOr<TResponse>>
         where TRequest : IRequest<ErrorOr<TResponse>>
     {
