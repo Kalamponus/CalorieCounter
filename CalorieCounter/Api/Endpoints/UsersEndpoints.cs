@@ -1,7 +1,7 @@
 ﻿using CalorieCounter.Api.Mapping;
-using CalorieCounter.Application.Commands.UserCommands;
-using CalorieCounter.Application.Queries.UserQueries.GetInfoQuery;
-using CalorieCounter.Domain.AggregatesModels;
+using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.UseCases.UserCases.Commands;
+using CalorieCounter.Application.UseCases.UserCases.Queries;
 using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using Contracts.Requests;
 using Contracts.Responses;
@@ -35,7 +35,7 @@ namespace CalorieCounter.Api.Endpoints
         GetUser(Guid id, IMediator mediator)
         {
             GetUserInfoQuery query = new(id);
-            ErrorOr<User> commandResult = await mediator.Send(query);
+            ErrorOr<UserDto> commandResult = await mediator.Send(query);
 
             if (commandResult.IsError)
             {
@@ -57,7 +57,7 @@ namespace CalorieCounter.Api.Endpoints
         CreateUser(CreateUserRequest request, IMediator mediator)
         {
             CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
-            ErrorOr<User> commandResult = await mediator.Send(command);
+            ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
@@ -82,7 +82,7 @@ namespace CalorieCounter.Api.Endpoints
         ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
         {
             ChangeUserNameCommand command = new(request.Id, request.NewName);
-            ErrorOr<User> commandResult = await mediator.Send(command);
+            ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
@@ -102,7 +102,7 @@ namespace CalorieCounter.Api.Endpoints
         UpdateUserGeneralData(UpdateUserGeneralDataRequest request, IMediator mediator)
         {
             UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height);
-            ErrorOr<User> commandResult = await mediator.Send(command);
+            ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
@@ -122,7 +122,7 @@ namespace CalorieCounter.Api.Endpoints
         UpdateWeight(Guid id, UpdateUserWeightRequest request, IMediator mediator)
         {
             UpdateUserWeightCommand command = new(id, request.Weight);
-            ErrorOr<User> commandResult = await mediator.Send(command);
+            ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
@@ -142,7 +142,7 @@ namespace CalorieCounter.Api.Endpoints
         ChangeTargetWeight(Guid id, ChangeUserTargetWeightRequest request, IMediator mediator)
         {
             ChangeUserTargetWeightCommand command = new(id, request.TargetWeight);
-            ErrorOr<User> commandResult = await mediator.Send(command);
+            ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
             {
@@ -157,7 +157,7 @@ namespace CalorieCounter.Api.Endpoints
         private static Results<Ok<UserResponse>,
                 NotFound<IEnumerable<string>>,
                 BadRequest<IEnumerable<string>>,
-                ProblemHttpResult> GetErrors(ErrorOr<User> commandResult)
+                ProblemHttpResult> GetErrors(ErrorOr<UserDto> commandResult)
         {
             IEnumerable<string> errorDescriptions = commandResult.Errors.Select(e => e.Description);
             switch (commandResult.FirstError.Type)

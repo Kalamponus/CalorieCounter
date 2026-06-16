@@ -1,12 +1,14 @@
-﻿using CalorieCounter.Application.ErrorCodes;
+﻿using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.ErrorCodes;
+using CalorieCounter.Application.Mapping;
 using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
 using ErrorOr;
 using MediatR;
 
-namespace CalorieCounter.Application.Commands.UserCommands
+namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
-    public class ChangeUserNameCommandHandler : IRequestHandler<ChangeUserNameCommand, ErrorOr<User>>
+    public class ChangeUserNameCommandHandler : IRequestHandler<ChangeUserNameCommand, ErrorOr<UserDto>>
     {
         private readonly UserContext _userContext;
 
@@ -15,7 +17,7 @@ namespace CalorieCounter.Application.Commands.UserCommands
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<User>> Handle(ChangeUserNameCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<UserDto>> Handle(ChangeUserNameCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
@@ -34,7 +36,7 @@ namespace CalorieCounter.Application.Commands.UserCommands
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save name changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user.MapToDto() : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save name changes to user {user.Id} even though the data was validated");
         }
     }
 }

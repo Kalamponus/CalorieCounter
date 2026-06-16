@@ -1,28 +1,30 @@
-﻿using CalorieCounter.Application.ErrorCodes;
-using CalorieCounter.Domain.AggregatesModels;
+﻿using CalorieCounter.Domain.AggregatesModels;
 using CalorieCounter.Infrastructure.Contexts;
+using CalorieCounter.Application.ErrorCodes;
 using ErrorOr;
 using MediatR;
+using CalorieCounter.Application.DTO;
+using CalorieCounter.Application.Mapping;
 
-namespace CalorieCounter.Application.Commands.UserCommands
+namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
-    public class UpdateUserGeneralDataCommandHandler : IRequestHandler<UpdateUserGeneralDataCommand, ErrorOr<User>>
+    public class UpdateUserWeightCommandHandler : IRequestHandler<UpdateUserWeightCommand, ErrorOr<UserDto>>
     {
         private readonly UserContext _userContext;
 
-        public UpdateUserGeneralDataCommandHandler(UserContext userContext)
+        public UpdateUserWeightCommandHandler(UserContext userContext)
         {
             _userContext = userContext;
         }
 
-        public async Task<ErrorOr<User>> Handle(UpdateUserGeneralDataCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<UserDto>> Handle(UpdateUserWeightCommand request, CancellationToken cancellationToken)
         {
             User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
 
             if (user is null)
                 return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
 
-            FluentResults.Result result = user.UpdateGeneralUserData(request.name, request.age, request.gender, request.height, request.weight);
+            FluentResults.Result result = user.UpdateCurrentWeight(request.weight);
 
             if (result.IsFailed)
             {
@@ -35,7 +37,7 @@ namespace CalorieCounter.Application.Commands.UserCommands
 
             bool areChangesSaved = await _userContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return areChangesSaved ? user : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save general data changes to user {user.Id} even though the data was validated");
+            return areChangesSaved ? user.MapToDto() : Error.Unexpected(UserErrorCodes.Unexpected, $"Couldn't save weight changes to user {user.Id} even though the data was validated");
         }
     }
 }
