@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -7,9 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Queries\**" />
     <Compile Remove="Middleware\**" />
+    <Content Remove="Application\Queries\**" />
     <Content Remove="Middleware\**" />
+    <EmbeddedResource Remove="Application\Queries\**" />
     <EmbeddedResource Remove="Middleware\**" />
+    <None Remove="Application\Queries\**" />
     <None Remove="Middleware\**" />
   </ItemGroup>
 
@@ -30,10 +34,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application\Queries\" />
   </ItemGroup>
 
 </Project>
