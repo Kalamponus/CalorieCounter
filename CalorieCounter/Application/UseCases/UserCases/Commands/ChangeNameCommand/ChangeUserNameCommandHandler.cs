@@ -24,7 +24,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
             if (user is null)
                 return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
 
-            FluentResults.Result result = user.ChangeName(request.newName);
+            FluentResults.Result result = user.ChangeName(request.name);
 
             if (result.IsFailed)
             {

@@ -1,5 +1,4 @@
 ﻿using CalorieCounter.Application.DTO;
-using CalorieCounter.Domain.AggregatesModels;
 using ErrorOr;
 using MediatR;
 
