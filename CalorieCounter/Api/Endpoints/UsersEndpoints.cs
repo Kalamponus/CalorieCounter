@@ -2,7 +2,6 @@
 using CalorieCounter.Application.DTO;
 using CalorieCounter.Application.UseCases.UserCases.Commands;
 using CalorieCounter.Application.UseCases.UserCases.Queries;
-using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using Contracts.Requests;
 using Contracts.Responses;
 using ErrorOr;
