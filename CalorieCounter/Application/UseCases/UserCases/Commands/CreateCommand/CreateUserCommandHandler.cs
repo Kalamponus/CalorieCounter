@@ -19,7 +19,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
 
         public async Task<ErrorOr<UserDto>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            FluentResults.Result<User> userCreationResult = User.RegisterNewUserData(Guid.NewGuid(), request.name, request.age, request.gender, request.height, request.weight, request.physicalActivityLevel);
+            FluentResults.Result<User> userCreationResult = User.RegisterNewUserData(Guid.NewGuid(), request.Name, request.Age, request.Gender, request.Height, request.Weight, request.PhysicalActivityLevel);
 
             if (userCreationResult.IsFailed)
             {

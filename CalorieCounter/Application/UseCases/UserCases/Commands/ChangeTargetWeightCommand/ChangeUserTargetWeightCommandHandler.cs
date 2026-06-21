@@ -19,12 +19,12 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
 
         public async Task<ErrorOr<UserDto>> Handle(ChangeUserTargetWeightCommand request, CancellationToken cancellationToken)
         {
-            User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
+            User? user = await _userContext.Users.FindAsync(request.Id, cancellationToken);
 
             if (user is null)
-                return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
+                return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.Id}");
 
-            FluentResults.Result result = user.SetTargetWeight(request.targetWeight);
+            FluentResults.Result result = user.SetTargetWeight(request.TargetWeight);
 
             if (result.IsFailed)
             {

@@ -4,5 +4,5 @@ using MediatR;
 
 namespace CalorieCounter.Application.UseCases.UserCases.Queries
 {
-    public record GetUserInfoQuery(Guid id) : IRequest<ErrorOr<UserDto>>;
+    public record GetUserInfoQuery(Guid Id) : IRequest<ErrorOr<UserDto>>;
 }

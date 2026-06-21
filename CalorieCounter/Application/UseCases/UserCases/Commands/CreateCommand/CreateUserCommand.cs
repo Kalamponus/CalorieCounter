@@ -6,10 +6,10 @@ using MediatR;
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public record CreateUserCommand(
-        string name,
-        int age,
-        Gender gender,
-        float weight,
-        float height,
-        PhysicalActivityLevel physicalActivityLevel) : IRequest<ErrorOr<UserDto>>;
+        string Name,
+        int Age,
+        Gender Gender,
+        float Weight,
+        float Height,
+        PhysicalActivityLevel PhysicalActivityLevel) : IRequest<ErrorOr<UserDto>>;
 }

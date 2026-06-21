@@ -5,6 +5,6 @@ using MediatR;
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public record ChangeUserTargetWeightCommand(
-        Guid id,
-        float targetWeight) : IRequest<ErrorOr<UserDto>>;
+        Guid Id,
+        float TargetWeight) : IRequest<ErrorOr<UserDto>>;
 }

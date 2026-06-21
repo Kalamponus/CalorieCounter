@@ -5,6 +5,6 @@ using MediatR;
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public record ChangeUserNameCommand(
-        Guid id,
-        string name) : IRequest<ErrorOr<UserDto>>;
+        Guid Id,
+        string Name) : IRequest<ErrorOr<UserDto>>;
 }

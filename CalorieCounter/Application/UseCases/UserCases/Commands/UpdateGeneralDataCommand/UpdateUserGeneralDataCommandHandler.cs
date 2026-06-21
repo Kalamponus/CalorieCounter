@@ -19,12 +19,12 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
 
         public async Task<ErrorOr<UserDto>> Handle(UpdateUserGeneralDataCommand request, CancellationToken cancellationToken)
         {
-            User? user = await _userContext.Users.FindAsync(request.id, cancellationToken);
+            User? user = await _userContext.Users.FindAsync(request.Id, cancellationToken);
 
             if (user is null)
-                return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
+                return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.Id}");
 
-            FluentResults.Result result = user.UpdateGeneralUserData(request.name, request.age, request.gender, request.height, request.weight, request.physicalActivityLevel);
+            FluentResults.Result result = user.UpdateGeneralUserData(request.Name, request.Age, request.Gender, request.Height, request.Weight, request.PhysicalActivityLevel);
 
             if (result.IsFailed)
             {

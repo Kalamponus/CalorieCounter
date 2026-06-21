@@ -6,7 +6,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Queries.Validators
     {
         public GetUserInfoQueryValidator()
         {
-            RuleFor(x => x.id).NotEmpty().WithMessage("Id cannot be empty");
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id cannot be empty");
         }
     }
 }

@@ -6,8 +6,8 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands.Validators
     {
         public UpdateUserWeightCommandValidator()
         {
-            RuleFor(x => x.id).NotEmpty().WithMessage("Id cannot be empty");
-            RuleFor(x => x.weight).GreaterThan(0).WithMessage("Weight must be greater than zero");
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id cannot be empty");
+            RuleFor(x => x.Weight).GreaterThan(0).WithMessage("Weight must be greater than zero");
         }
     }
 }
