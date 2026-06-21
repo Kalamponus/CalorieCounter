@@ -16,6 +16,7 @@ namespace CalorieCounter.Api.Mapping
                 Height = user.Height,
                 Weight = user.Weight,
                 TargetWeight = user.TargetWeight,
+                PhysicalActivityLevel = (Contracts.Common.PhysicalActivityLevel)user.PhysicalActivityLevel,
             };
         }
     }

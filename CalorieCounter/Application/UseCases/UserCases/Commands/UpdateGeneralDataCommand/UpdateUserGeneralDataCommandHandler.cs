@@ -24,7 +24,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
             if (user is null)
                 return Error.NotFound(UserErrorCodes.NotFound, $"Couldn't find user {request.id}");
 
-            FluentResults.Result result = user.UpdateGeneralUserData(request.name, request.age, request.gender, request.height, request.weight);
+            FluentResults.Result result = user.UpdateGeneralUserData(request.name, request.age, request.gender, request.height, request.weight, request.physicalActivityLevel);
 
             if (result.IsFailed)
             {

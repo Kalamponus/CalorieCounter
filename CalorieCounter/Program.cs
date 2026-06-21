@@ -4,6 +4,7 @@ using CalorieCounter.Application;
 using CalorieCounter.Persistence;
 using FluentValidation;
 using CalorieCounter.Application.Behaviours;
+using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -22,6 +23,7 @@ builder.Services.AddPersistence(builder.Configuration.GetConnectionString("MainD
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddMediatR(cfg =>
 {
+    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
     cfg.AddOpenBehavior(typeof(CommandValidationBehaviour<,>));
 });
 

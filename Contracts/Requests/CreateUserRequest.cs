@@ -10,5 +10,6 @@ namespace Contracts.Requests
         public required float Weight { get; init; }
         public required float Height { get; init; }
         public required float TargetWeight { get; init; }
+        public required PhysicalActivityLevel PhysicalActivityLevel { get; init; }
     }
 }

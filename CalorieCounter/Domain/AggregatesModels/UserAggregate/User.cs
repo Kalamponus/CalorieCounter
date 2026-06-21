@@ -16,21 +16,22 @@ namespace CalorieCounter.Domain.AggregatesModels
         public Gender Gender { get; private set; }
         public float Weight { get; private set; }
         public float Height { get; private set; }
+        public PhysicalActivityLevel PhysicalActivityLevel { get; private set; }
         public float TargetWeight { get; private set; }
 
-        public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight)
+        public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel)
         {
             List<IError> errors = ValidateData(name, age, gender, height, weight);
 
             if (errors.Count > 0)
                 return Result.Fail(errors);
 
-            User user = new(id, name, age, gender, height, weight);
+            User user = new(id, name, age, gender, height, weight, physicalActivityLevel);
 
             return Result.Ok(user);
         }
 
-        private User(Guid id, string name, int age, Gender gender, float height, float weight) : base(id)
+        private User(Guid id, string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel) : base(id)
         {
             Name = name;
             Age = age;
@@ -39,7 +40,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             Weight = weight;
         }
 
-        public Result UpdateGeneralUserData(string name, int age, Gender gender, float height, float weight)
+        public Result UpdateGeneralUserData(string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel)
         {
             List<IError> errors = ValidateData(name, age, gender, height, weight);
 
@@ -51,6 +52,7 @@ namespace CalorieCounter.Domain.AggregatesModels
             Gender = gender;
             Height = height;
             Weight = weight;
+            PhysicalActivityLevel = physicalActivityLevel;
 
             return Result.Ok();
         }
@@ -95,6 +97,12 @@ namespace CalorieCounter.Domain.AggregatesModels
 
             TargetWeight = targetWeight;
 
+            return Result.Ok();
+        }
+
+        public Result ChangePhysicalActivity(PhysicalActivityLevel physicalActivityLevel)
+        {
+            PhysicalActivityLevel = physicalActivityLevel;
             return Result.Ok();
         }
 
