@@ -22,6 +22,8 @@ namespace CalorieCounter.Infrastructure.Configurations
                 .IsRequired();
             builder.Property(u => u.Height)
                 .IsRequired();
+            builder.Property(u => u.PhysicalActivityLevel)
+                .IsRequired();
         }
     }
 }
