@@ -11,7 +11,7 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands.Validators
             RuleFor(x => x.age).GreaterThan(0).WithMessage("Age must be greater than zero");
             RuleFor(x => x.weight).GreaterThan(0).WithMessage("Weight must be greater than zero");
             RuleFor(x => x.height).GreaterThan(0).WithMessage("Height must be greater than zero");
-            RuleFor(x => x.gender).IsInEnum().WithMessage(x => $"Cannot identify the gender by number {(int)x.gender}");
+            RuleFor(x => x.gender).IsInEnum().WithMessage(x => $"Unknown gender index: {(int)x.gender}");
         }
     }
 }

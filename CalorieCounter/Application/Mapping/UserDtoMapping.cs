@@ -14,7 +14,8 @@ namespace CalorieCounter.Application.Mapping
                 user.Gender,
                 user.Weight,
                 user.Height,
-                user.TargetWeight);
+                user.TargetWeight,
+                user.PhysicalActivityLevel);
         }
     }
 }

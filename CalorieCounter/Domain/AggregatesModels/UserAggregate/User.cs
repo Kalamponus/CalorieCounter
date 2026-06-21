@@ -19,19 +19,19 @@ namespace CalorieCounter.Domain.AggregatesModels
         public PhysicalActivityLevel PhysicalActivityLevel { get; private set; }
         public float TargetWeight { get; private set; }
 
-        public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight)
+        public static Result<User> RegisterNewUserData(Guid id, string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel)
         {
             List<IError> errors = ValidateData(name, age, gender, height, weight);
 
             if (errors.Count > 0)
                 return Result.Fail(errors);
 
-            User user = new(id, name, age, gender, height, weight);
+            User user = new(id, name, age, gender, height, weight, physicalActivityLevel);
 
             return Result.Ok(user);
         }
 
-        private User(Guid id, string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel = PhysicalActivityLevel.None) : base(id)
+        private User(Guid id, string name, int age, Gender gender, float height, float weight, PhysicalActivityLevel physicalActivityLevel) : base(id)
         {
             Name = name;
             Age = age;

@@ -10,5 +10,6 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands
         int age,
         Gender gender,
         float weight,
-        float height) : IRequest<ErrorOr<UserDto>>;
+        float height,
+        PhysicalActivityLevel physicalActivityLevel) : IRequest<ErrorOr<UserDto>>;
 }

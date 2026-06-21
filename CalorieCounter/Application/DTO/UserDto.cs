@@ -9,5 +9,6 @@ namespace CalorieCounter.Application.DTO
         Gender Gender,
         float Weight,
         float Height,
-        float TargetWeight);
+        float TargetWeight,
+        PhysicalActivityLevel PhysicalActivityLevel);
 }
