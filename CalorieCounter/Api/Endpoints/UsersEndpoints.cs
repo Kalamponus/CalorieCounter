@@ -2,7 +2,6 @@
 using CalorieCounter.Application.DTO;
 using CalorieCounter.Application.UseCases.UserCases.Commands;
 using CalorieCounter.Application.UseCases.UserCases.Queries;
-using CalorieCounter.Domain.AggregatesModels.UserAggregate;
 using Contracts.Requests;
 using Contracts.Responses;
 using ErrorOr;
@@ -56,7 +55,7 @@ namespace CalorieCounter.Api.Endpoints
                 Conflict<IEnumerable<string>>>>
         CreateUser(CreateUserRequest request, IMediator mediator)
         {
-            CreateUserCommand command = new(request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height, (PhysicalActivityLevel)request.PhysicalActivityLevel);
+            CreateUserCommand command = new(request.Name, request.Age, request.Gender.MapToDomain(), request.Weight, request.Height, request.PhysicalActivityLevel.MapToDomain());
             ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
@@ -101,7 +100,7 @@ namespace CalorieCounter.Api.Endpoints
                 ProblemHttpResult>>
         UpdateUserGeneralData(UpdateUserGeneralDataRequest request, IMediator mediator)
         {
-            UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, (Gender)request.Gender, request.Weight, request.Height, (PhysicalActivityLevel)request.PhysicalActivityLevel);
+            UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, request.Gender.MapToDomain(), request.Weight, request.Height, request.PhysicalActivityLevel.MapToDomain());
             ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
