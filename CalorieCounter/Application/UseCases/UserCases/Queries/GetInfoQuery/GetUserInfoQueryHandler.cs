@@ -21,10 +21,10 @@ namespace CalorieCounter.Application.UseCases.UserCases.Queries
         {
             User? user = await _userContext.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(usr => usr.Id == request.id, cancellationToken);
+                .FirstOrDefaultAsync(usr => usr.Id == request.Id, cancellationToken);
 
             if (user is null)
-                return Error.NotFound($"User.NotFound", $"Couldn't find user with id {request.id}");
+                return Error.NotFound($"User.NotFound", $"Couldn't find user with id {request.Id}");
             else
                 return user.MapToDto();
         }

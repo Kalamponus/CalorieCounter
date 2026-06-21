@@ -6,11 +6,11 @@ using MediatR;
 namespace CalorieCounter.Application.UseCases.UserCases.Commands
 {
     public record UpdateUserGeneralDataCommand(
-        Guid id,
-        string name,
-        int age,
-        Gender gender,
-        float weight,
-        float height,
-        PhysicalActivityLevel physicalActivityLevel) : IRequest<ErrorOr<UserDto>>;
+        Guid Id,
+        string Name,
+        int Age,
+        Gender Gender,
+        float Weight,
+        float Height,
+        PhysicalActivityLevel PhysicalActivityLevel) : IRequest<ErrorOr<UserDto>>;
 }

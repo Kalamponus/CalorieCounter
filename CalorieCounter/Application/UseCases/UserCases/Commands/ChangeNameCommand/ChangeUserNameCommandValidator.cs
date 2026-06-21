@@ -6,8 +6,8 @@ namespace CalorieCounter.Application.UseCases.UserCases.Commands.Validators
     {
         public ChangeUserNameCommandValidator()
         {
-            RuleFor(x => x.id).NotEmpty().WithMessage("Id cannot be empty");
-            RuleFor(x => x.name).NotEmpty().WithMessage("Name cannot be empty");
+            RuleFor(x => x.Id).NotEmpty().WithMessage("Id cannot be empty");
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Name cannot be empty");
         }
     }
 }
