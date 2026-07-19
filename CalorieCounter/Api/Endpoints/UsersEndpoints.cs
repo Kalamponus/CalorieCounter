@@ -78,9 +78,9 @@ namespace CalorieCounter.Api.Endpoints
                 NotFound<IEnumerable<string>>,
                 BadRequest<IEnumerable<string>>,
                 ProblemHttpResult>>
-        ChangeUserName(ChangeUserNameRequest request, IMediator mediator)
+        ChangeUserName(Guid id, ChangeUserNameRequest request, IMediator mediator)
         {
-            ChangeUserNameCommand command = new(request.Id, request.NewName);
+            ChangeUserNameCommand command = new(id, request.NewName);
             ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
@@ -98,9 +98,9 @@ namespace CalorieCounter.Api.Endpoints
                 NotFound<IEnumerable<string>>,
                 BadRequest<IEnumerable<string>>,
                 ProblemHttpResult>>
-        UpdateUserGeneralData(UpdateUserGeneralDataRequest request, IMediator mediator)
+        UpdateUserGeneralData(Guid id, UpdateUserGeneralDataRequest request, IMediator mediator)
         {
-            UpdateUserGeneralDataCommand command = new(request.Id, request.Name, request.Age, request.Gender.MapToDomain(), request.Weight, request.Height, request.PhysicalActivityLevel.MapToDomain());
+            UpdateUserGeneralDataCommand command = new(id, request.Name, request.Age, request.Gender.MapToDomain(), request.Weight, request.Height, request.PhysicalActivityLevel.MapToDomain());
             ErrorOr<UserDto> commandResult = await mediator.Send(command);
 
             if (commandResult.IsError)
